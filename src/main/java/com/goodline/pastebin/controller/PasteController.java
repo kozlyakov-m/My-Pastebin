@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -21,9 +23,13 @@ public class PasteController{
 
 
 
-    @RequestMapping("/")
+    /*@RequestMapping("/")
     public String index() {
         return "Greetings from Spring Boot!";
+    }*/
+    @GetMapping
+    public List<Paste> getTen(){
+        return repository.findTop10ByIsPrivateOrderByIdDesc(false);
     }
 
 
@@ -31,11 +37,10 @@ public class PasteController{
     @PostMapping("/")
     public String newPaste(@RequestBody Paste paste){
         UUID uniqueKey = UUID.randomUUID();
+        paste.setHash(String.valueOf(uniqueKey));
 
-        String hash = String.valueOf(uniqueKey);
-        Paste p = new Paste(paste.getText(), hash);
-        repository.save(p);
-        return "paste has been saved\n"+ hash;
+        repository.save(paste);
+        return "paste has been saved\n"+ uniqueKey+"\nexpire date: "+paste.getExpireDate();
     }
 
     @GetMapping("/{hash}")

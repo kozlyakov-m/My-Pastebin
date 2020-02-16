@@ -1,27 +1,33 @@
 package com.goodline.pastebin.model;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
-
+//@Table(name = "Paste")
 public class Paste{
 
     @Id @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
     private String text;
     private String hash;
+    private Date expireDate;
+    private boolean isPrivate;
 
     protected Paste(){}
 
     public Paste(String text, String hash) {
         this.text = text;
         this.hash = hash;
+    }
+
+    public Paste(String text, String hash, Date expireDate, boolean isPrivate) {
+        this.text = text;
+        this.hash = hash;
+        this.expireDate = expireDate;
+        this.isPrivate = isPrivate;
     }
 
     public void setId(int id) {
@@ -47,5 +53,21 @@ public class Paste{
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 }
