@@ -52,7 +52,7 @@ public class PasteController{
         repository.save(paste);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/"+uniqueKey));
-        String content = "{ message: Paste has been saved, url: " + uniqueKey;
+        String content = "{ \"message\": \"Paste has been saved\", \"hash\": \"" + uniqueKey +"\"";
         return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
         //return "paste has been saved\n" + uniqueKey+"\nexpire date: "+ paste.getExpireDate();
     }
@@ -61,10 +61,10 @@ public class PasteController{
     public Paste getOne(@PathVariable String hash) {
         Paste response = repository.findByHash(hash);
         if(response == null) {
-            return response;
+            throw new NotFoundException();
         }
         else{
-            throw new NotFoundException();
+            return response;
         }
     }
 
