@@ -23,7 +23,7 @@ POST запрос на http://localhost:8080/. В теле запроса
 После успешного добавления сервер вернет HTTP-статус 
 "201 CREATED"и JSON:  
 `{ "message": "Paste has been saved",
- "hash": "7d0f1446-7625-40f3-b3fe-3a9898ad6706"`
+ "hash": "7d0f1446-7625-40f3-b3fe-3a9898ad6706"}`
 
 Для получения  пасты по сссылке выполнить GET запрос
 по адресу http://localhost:8080/{hash}  
