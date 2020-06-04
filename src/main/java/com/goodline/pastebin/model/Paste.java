@@ -9,7 +9,7 @@ import java.util.Date;
 //@Table(name = "Paste")
 public class Paste{
 
-    @Id @GeneratedValue(strategy= GenerationType.AUTO)
+    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
     private String text;
     private String hash;
