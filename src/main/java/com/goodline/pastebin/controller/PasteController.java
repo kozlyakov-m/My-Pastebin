@@ -22,6 +22,7 @@ import java.util.UUID;
 
 
 @RestController
+@RequestMapping("/api")
 public class PasteController{
 
     HashMap<Integer, Paste> pastes = new HashMap<>();
