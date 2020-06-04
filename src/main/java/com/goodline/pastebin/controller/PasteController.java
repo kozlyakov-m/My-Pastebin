@@ -3,18 +3,14 @@ package com.goodline.pastebin.controller;
 import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
 import com.goodline.pastebin.repos.PasteRepository;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import sun.security.util.SecurityProperties;
 
 import java.net.URI;
-import java.security.Security;
 import java.util.List;
 import java.util.UUID;
 
