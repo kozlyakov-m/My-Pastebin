@@ -1,5 +1,6 @@
 package com.goodline.pastebin.controller;
 
+import com.goodline.pastebin.exceptions.NoAccessException;
 import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
 import com.goodline.pastebin.repos.PasteRepository;
@@ -63,9 +64,13 @@ public class PasteController {
     @PutMapping("/edit/{hash}")
     public ResponseEntity<String> editPaste(@PathVariable String hash, @RequestBody Paste newPaste) {
         Paste oldPaste = repository.findByHash(hash);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if ( oldPaste == null) {
             throw new NotFoundException();
-        } else {
+        } else if(!oldPaste.getAuthor().equals(auth.getName())) {
+            throw new NoAccessException();
+        }
+        else {
             oldPaste.setText(newPaste.getText());
             oldPaste.setExpireDate(newPaste.getExpireDate());
             oldPaste.setIsPrivate(newPaste.isPrivate());
