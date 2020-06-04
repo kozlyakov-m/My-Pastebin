@@ -54,7 +54,22 @@ public class PasteController {
         }
     }
 
-
+    @PutMapping("/edit/{hash}")
+    public ResponseEntity<String> editPaste(@PathVariable String hash, @RequestBody Paste newPaste) {
+        Paste oldPaste = repository.findByHash(hash);
+        if ( oldPaste == null) {
+            throw new NotFoundException();
+        } else {
+            oldPaste.setText(newPaste.getText());
+            oldPaste.setExpireDate(newPaste.getExpireDate());
+            oldPaste.setIsPrivate(newPaste.isPrivate());
+            repository.save(oldPaste);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("/" + hash));
+            String content = "{ \"message\": \"Paste has been saved\", \"hash\": \"" + hash + "\"";
+            return new ResponseEntity<>(content, headers, HttpStatus.OK);
+        }
+    }
 
     @GetMapping("/my")
     public String my(){
