@@ -3,6 +3,7 @@ package com.goodline.pastebin.controller;
 import com.goodline.pastebin.exceptions.NoAccessException;
 import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
+import com.goodline.pastebin.model.Type;
 import com.goodline.pastebin.repos.PasteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +29,7 @@ public class PasteController {
 
     @GetMapping
     public List<Paste> getTen() {
-        //return repository.findTop10ByIsPrivateOrderByIdDesc(false);
-        return  repository.findTop10ByTypeOrderByIdDesc(false);
+        return  repository.findTop10ByTypeOrderByIdDesc(Type.PUBLIC);
     }
 
 
@@ -75,7 +75,7 @@ public class PasteController {
         else {
             oldPaste.setText(newPaste.getText());
             oldPaste.setExpireDate(newPaste.getExpireDate());
-            oldPaste.setType(newPaste.isType());
+            oldPaste.setType(newPaste.getType());
             repository.save(oldPaste);
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(URI.create("/" + hash));

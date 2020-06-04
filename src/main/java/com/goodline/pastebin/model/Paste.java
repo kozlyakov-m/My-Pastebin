@@ -14,10 +14,9 @@ public class Paste{
     private String text;
     private String hash;
     private Date expireDate;
-
-    private boolean type;
-
+    private Type type;
     private String author;
+
     public String getAuthor() {
         return author;
     }
@@ -33,7 +32,7 @@ public class Paste{
         this.hash = hash;
     }
 
-    public Paste(String text, String hash, Date expireDate, boolean type) {
+    public Paste(String text, String hash, Date expireDate, Type type) {
         this.text = text;
         this.hash = hash;
         this.expireDate = expireDate;
@@ -73,11 +72,11 @@ public class Paste{
         this.expireDate = expireDate;
     }
 
-    public boolean isType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(boolean type) {
+    public void setType(Type type) {
         this.type = type;
     }
 }
