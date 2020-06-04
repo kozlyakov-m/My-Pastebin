@@ -84,16 +84,10 @@ public class PasteController {
         }
     }
 
-    @GetMapping("/my")
-    public String my(){
+    @GetMapping("/my-pastes")
+    public List<Paste> myPastes(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
-
-    @GetMapping("/foo")
-    public String foo(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
+        return repository.findByAuthor(auth.getName());
     }
 
 }

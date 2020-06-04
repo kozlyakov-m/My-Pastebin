@@ -16,4 +16,6 @@ public interface PasteRepository extends JpaRepository<Paste, Integer> {
 
     List<Paste> findTop10ByTypeOrderByIdDesc(Type type);
 
+    List<Paste> findByAuthor(String author);
+
 }
