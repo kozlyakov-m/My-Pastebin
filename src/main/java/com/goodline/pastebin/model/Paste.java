@@ -14,9 +14,10 @@ public class Paste{
     private String text;
     private String hash;
     private Date expireDate;
-    private boolean isPrivate;
-    private String author;
 
+    private boolean type;
+
+    private String author;
     public String getAuthor() {
         return author;
     }
@@ -32,11 +33,11 @@ public class Paste{
         this.hash = hash;
     }
 
-    public Paste(String text, String hash, Date expireDate, boolean isPrivate) {
+    public Paste(String text, String hash, Date expireDate, boolean type) {
         this.text = text;
         this.hash = hash;
         this.expireDate = expireDate;
-        this.isPrivate = isPrivate;
+        this.type = type;
     }
 
     public void setId(int id) {
@@ -72,12 +73,11 @@ public class Paste{
         this.expireDate = expireDate;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public boolean isType() {
+        return type;
     }
 
-    public void setIsPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
+    public void setType(boolean type) {
+        this.type = type;
     }
-
 }

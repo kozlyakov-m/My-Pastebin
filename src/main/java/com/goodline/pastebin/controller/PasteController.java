@@ -28,7 +28,8 @@ public class PasteController {
 
     @GetMapping
     public List<Paste> getTen() {
-        return repository.findTop10ByIsPrivateOrderByIdDesc(false);
+        //return repository.findTop10ByIsPrivateOrderByIdDesc(false);
+        return  repository.findTop10ByTypeOrderByIdDesc(false);
     }
 
 
@@ -74,7 +75,7 @@ public class PasteController {
         else {
             oldPaste.setText(newPaste.getText());
             oldPaste.setExpireDate(newPaste.getExpireDate());
-            oldPaste.setIsPrivate(newPaste.isPrivate());
+            oldPaste.setType(newPaste.isType());
             repository.save(oldPaste);
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(URI.create("/" + hash));

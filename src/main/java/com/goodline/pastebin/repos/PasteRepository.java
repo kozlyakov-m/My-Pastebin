@@ -13,9 +13,11 @@ public interface PasteRepository extends JpaRepository<Paste, Integer> {
 
     Paste findByHash(String hash);
 
-    //@Query(value = "SELECT * FROM Paste WHERE isPrivate='false' ORDER BY DESC", nativeQuery = true)
+    //@Query("SELECT p FROM Paste p WHERE p.type=false ORDER BY p.id DESC")
     //List<Paste> findLast10();
 
-    List<Paste> findTop10ByIsPrivateOrderByIdDesc(boolean isPrivate);
+
+    //List<Paste> findTop10ByIsPrivateOrderByIdDesc(boolean isPrivate);
+    List<Paste> findTop10ByTypeOrderByIdDesc(boolean type);
 
 }
