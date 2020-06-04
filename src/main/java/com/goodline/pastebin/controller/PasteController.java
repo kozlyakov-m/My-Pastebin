@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -67,7 +68,7 @@ public class PasteController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if ( oldPaste == null) {
             throw new NotFoundException();
-        } else if(!oldPaste.getAuthor().equals(auth.getName())) {
+        } else if(!Objects.equals(oldPaste.getAuthor(), auth.getName())) { //Objects.equals не выкидывает NPE
             throw new NoAccessException();
         }
         else {
