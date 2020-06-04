@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +30,18 @@ public class PasteController {
     }
 
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<String> newPaste(@RequestBody Paste paste) {
         UUID uniqueKey = UUID.randomUUID();
         paste.setHash(String.valueOf(uniqueKey));
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)){
+            paste.setAuthor(auth.getName());
+        }
+        else {
+            paste.setAuthor(null);
+        }
 
         repository.save(paste);
         HttpHeaders headers = new HttpHeaders();
@@ -69,14 +79,14 @@ public class PasteController {
 
     @GetMapping("/my")
     public String my(){
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return name;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 
     @GetMapping("/foo")
     public String foo(){
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return name;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 
 }

@@ -15,6 +15,15 @@ public class Paste{
     private String hash;
     private Date expireDate;
     private boolean isPrivate;
+    private String author;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
     protected Paste(){}
 
@@ -70,4 +79,5 @@ public class Paste{
     public void setIsPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
+
 }
