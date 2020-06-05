@@ -31,7 +31,11 @@ public class RegistrationController {
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole("USER");
 
-        repository.save(user);
+        if (repository.findByLogin(user.getLogin()) == null) {
+            repository.save(user);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(user.getLogin(), rawPassword);
