@@ -1,0 +1,1 @@
+alter table paste alter column text text;
