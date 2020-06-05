@@ -25,7 +25,7 @@ public class RegistrationController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping()
-    public ResponseEntity<String> newPaste(@RequestBody PastebinUser user) {
+    public ResponseEntity<String> newUser(@RequestBody PastebinUser user) {
 
         String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
