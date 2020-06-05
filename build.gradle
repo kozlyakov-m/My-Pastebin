@@ -42,8 +42,8 @@ jacocoTestReport {
 	}
 }
 
-task stage(dependsOn: ['build', 'clean'])
-build.mustRunAfter clean
+task stage(dependsOn: ['assemble', 'clean'])
+assemble.mustRunAfter clean
 
 task copyToLib(type: Copy) {
 	into "$buildDir/libs"
