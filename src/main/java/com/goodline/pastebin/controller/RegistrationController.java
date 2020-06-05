@@ -34,7 +34,8 @@ public class RegistrationController {
         if (repository.findByLogin(user.getLogin()) == null) {
             repository.save(user);
         } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            String content = "{ \"message\": \"This login is already taken\" }";
+            return new ResponseEntity<>(content, HttpStatus.CONFLICT);
         }
 
         HttpHeaders headers = new HttpHeaders();
@@ -42,7 +43,7 @@ public class RegistrationController {
         headers.setLocation(URI.create("/api/my-pastes"));
         String content = "{ \"message\": \"User has been saved\"," +
                 " \"login\": \"" + user.getLogin() + "\"" +
-                " \"password\": \"" + rawPassword + "\"";
+                " \"password\": \"" + rawPassword + "\"}";
 
         return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
     }
