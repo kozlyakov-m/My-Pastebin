@@ -5,6 +5,8 @@ import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
 import com.goodline.pastebin.model.Type;
 import com.goodline.pastebin.repos.PasteRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,21 +23,24 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
+@ApiOperation(value = "Методы, достуные только аутентифицированным пользователям",
+        authorizations = {@Authorization(value = "basicAuth")})
 public class PrivateController {
 
     @Autowired
     private PasteRepository repository;
 
+    @ApiOperation(value = "Редактирование пасты",
+            authorizations = {@Authorization(value = "basicAuth")})
     @PutMapping("/edit/{hash}")
     public ResponseEntity<String> editPaste(@PathVariable String hash, @RequestBody Paste newPaste) {
         Paste oldPaste = repository.findByHash(hash);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if ( oldPaste == null) {
+        if (oldPaste == null) {
             throw new NotFoundException();
-        } else if(!Objects.equals(oldPaste.getAuthor(), auth.getName())) { //Objects.equals не выкидывает NPE
+        } else if (!Objects.equals(oldPaste.getAuthor(), auth.getName())) { //Objects.equals не выкидывает NPE
             throw new NoAccessException();
-        }
-        else {
+        } else {
             oldPaste.setText(newPaste.getText());
             oldPaste.setExpireDate(newPaste.getExpireDate());
             oldPaste.setType(newPaste.getType());
@@ -47,8 +52,10 @@ public class PrivateController {
         }
     }
 
+    @ApiOperation(value = "Просмотр всех своих паст",
+            authorizations = {@Authorization(value = "basicAuth")})
     @GetMapping("/my-pastes")
-    public List<Paste> myPastes(){
+    public List<Paste> myPastes() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return repository.findByAuthor(auth.getName());
     }
