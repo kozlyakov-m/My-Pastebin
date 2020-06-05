@@ -48,7 +48,7 @@ public class PasteController {
 
         repository.save(paste);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/" + uniqueKey));
+        headers.setLocation(URI.create("/api/" + uniqueKey));
         String content = "{ \"message\": \"Paste has been saved\", \"hash\": \"" + uniqueKey + "\"";
         return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
     }
