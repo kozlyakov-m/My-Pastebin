@@ -38,9 +38,7 @@ public class RegistrationControllerTest {
     @Test
     @DisplayName("Успешное добавление пользователя")
     public void createUser() {
-        PastebinUser user = new PastebinUser();
-        user.setLogin("test");
-        user.setPassword("pass");
+        PastebinUser user = new PastebinUser("test", "pass");
 
         ResponseEntity<String> result;
         result = registrationController.newUser(user);
@@ -53,15 +51,37 @@ public class RegistrationControllerTest {
     @Test
     @DisplayName("Попытка создать пользователя с сущестующим именем")
     public void tryCreateExistingUser() {
-        PastebinUser user = new PastebinUser();
-        user.setLogin("user");
-        user.setPassword("pass");
+        PastebinUser user = new PastebinUser("user", "pass");
 
         ResponseEntity<String> result;
         result = registrationController.newUser(user);
 
 
         Assertions.assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Попытка создать пользователя с пустым логином")
+    public void emptyLogin() {
+        PastebinUser user = new PastebinUser( null, "pass");
+
+        ResponseEntity<String> result;
+        result = registrationController.newUser(user);
+
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Попытка создать пользователя с пустым паролем")
+    public void emptyPassword() {
+        PastebinUser user = new PastebinUser( "login", null);
+
+        ResponseEntity<String> result;
+        result = registrationController.newUser(user);
+
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
 

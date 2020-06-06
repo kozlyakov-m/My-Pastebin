@@ -27,6 +27,10 @@ public class RegistrationController {
     @PostMapping()
     public ResponseEntity<String> newUser(@RequestBody PastebinUser user) {
 
+        if(user.getLogin() == null || user.getPassword() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole("USER");
