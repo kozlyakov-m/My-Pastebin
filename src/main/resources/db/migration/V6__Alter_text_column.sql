@@ -1,1 +1,1 @@
-alter table paste alter column text text;
+alter table paste alter column text set data type text;

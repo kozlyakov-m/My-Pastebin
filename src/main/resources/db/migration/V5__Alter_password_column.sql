@@ -1,1 +1,1 @@
-alter table users alter column password varchar(255);
+alter table users alter column password set data type varchar(255);
