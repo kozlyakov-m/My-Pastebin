@@ -12,6 +12,7 @@ public class Paste{
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
     @Lob
+    @Column(columnDefinition = "text")
     private String text;
     private String hash;
     private Date expireDate;
