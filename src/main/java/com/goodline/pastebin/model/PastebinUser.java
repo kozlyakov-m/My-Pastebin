@@ -16,7 +16,7 @@ public class PastebinUser {
     private String password;
     private String role;
 
-    public PastebinUser() {
+    protected PastebinUser() {
     }
 
     public PastebinUser(String login, String password) {
