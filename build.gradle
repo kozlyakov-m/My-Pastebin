@@ -30,6 +30,7 @@ dependencies {
 
 	compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 
+	compile group: 'com.google.guava', name: 'guava', version: '20.0'
 }
 
 test {
@@ -48,6 +49,9 @@ task copyToLib(type: Copy) {
 	from(configurations.compile)
 }
 
-task stage(dependsOn: ['copyToLib', 'clean'])
+task stage(dependsOn: ['assemble', 'clean'])
+assemble.mustRunAfter clean
+
+stage.dependsOn(copyToLib)
 copyToLib.mustRunAfter clean
 
