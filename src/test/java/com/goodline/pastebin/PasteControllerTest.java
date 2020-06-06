@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -138,5 +140,17 @@ public class PasteControllerTest {
 
         Assertions.assertNotNull(paste.getHash());
         Mockito.verify(repository).save(paste);
+    }
+
+    @Test
+    @DisplayName("Попытка добавить пасту без текста")
+    public void emptyPaste() {
+        Paste paste = new Paste(null, null);
+
+        ResponseEntity<String> result;
+        result = pasteController.newPaste(paste);
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+
     }
 }

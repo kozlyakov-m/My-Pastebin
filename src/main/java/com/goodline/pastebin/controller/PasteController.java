@@ -35,6 +35,10 @@ public class PasteController {
 
     @PostMapping()
     public ResponseEntity<String> newPaste(@RequestBody Paste paste) {
+        if(paste.getText() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         UUID uniqueKey = UUID.randomUUID();
         paste.setHash(String.valueOf(uniqueKey));
 
