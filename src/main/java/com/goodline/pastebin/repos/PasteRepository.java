@@ -21,6 +21,8 @@ public interface PasteRepository extends JpaRepository<Paste, Integer> {
 
     List<Paste> findByAuthor(String author);
 
+    //type=0 means type=PUBLIC
+    @Query("select p from Paste p where upper(p.text) like upper(?1) and (p.type = 0)")
     List<Paste> findByTextContains(String text);
 
 }

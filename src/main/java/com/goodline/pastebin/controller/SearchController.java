@@ -21,7 +21,7 @@ public class SearchController {
 
     @GetMapping()
     public List<Paste> searchByText(@RequestParam String text) {
-        return repository.findByTextContains(text);
+        return repository.findByTextContains("%"+text+"%");
     }
 
 }
