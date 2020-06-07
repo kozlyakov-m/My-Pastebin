@@ -4,6 +4,8 @@ os: linux
 dist: trusty
 jdk: oraclejdk8
 
+before_script:
+  - ./gradlew build
 script:
   - ./gradlew jacocoTestReport
 
