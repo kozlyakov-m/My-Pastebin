@@ -5,7 +5,7 @@ dist: trusty
 jdk: oraclejdk8
 
 before_script:
-  - ./gradlew clean && ./gradlew assemble
+  - ./gradlew stage
 script:
   - ./gradlew jacocoTestReport
 
