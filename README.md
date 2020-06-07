@@ -4,7 +4,7 @@
 [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/kozlyakovm/my-pastebin)](https://hub.docker.com/r/kozlyakovm/my-pastebin)
 
 #### Запуск:
-`docker run -p 8080:8080 kozlyakov/my-pastebin:1.1`
+`docker run -p 8080:8080 kozlyakov/my-pastebin`
 
 **Подробную документацию API можно найти по адресу `/swagger-ui.html` ([Посмотреть на heroku](https://my-pastebin.herokuapp.com/swagger-ui.html))**  
 
