@@ -22,10 +22,10 @@ public class RegistrationControllerTest {
     private RegistrationController registrationController;
 
     @MockBean
-    UserRepository repository;
+    private UserRepository repository;
 
     @MockBean
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void setMocks() {

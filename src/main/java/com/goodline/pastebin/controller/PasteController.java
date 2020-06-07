@@ -1,6 +1,5 @@
 package com.goodline.pastebin.controller;
 
-import com.goodline.pastebin.exceptions.NoAccessException;
 import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
 import com.goodline.pastebin.model.Type;
@@ -15,8 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 
@@ -29,7 +28,10 @@ public class PasteController {
 
     @GetMapping
     public List<Paste> getTen() {
-        return  repository.findTop10ByTypeOrderByIdDesc(Type.PUBLIC);
+        Type type = Type.PUBLIC;
+        Date date = new Date(System.currentTimeMillis());
+        return repository
+                .findTop10ByTypeAndExpireDateNullOrTypeAndExpireDateGreaterThanOrderByIdDesc(type, type, date);
     }
 
 
