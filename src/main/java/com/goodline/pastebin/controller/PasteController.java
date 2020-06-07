@@ -1,5 +1,6 @@
 package com.goodline.pastebin.controller;
 
+import com.goodline.pastebin.exceptions.NoAccessException;
 import com.goodline.pastebin.exceptions.NotFoundException;
 import com.goodline.pastebin.model.Paste;
 import com.goodline.pastebin.model.Type;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -37,7 +39,7 @@ public class PasteController {
 
     @PostMapping()
     public ResponseEntity<String> newPaste(@RequestBody Paste paste) {
-        if(paste.getText() == null){
+        if (paste.getText() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -45,10 +47,9 @@ public class PasteController {
         paste.setHash(String.valueOf(uniqueKey));
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)){
+        if (auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             paste.setAuthor(auth.getName());
-        }
-        else {
+        } else {
             paste.setAuthor(null);
         }
 
@@ -61,14 +62,29 @@ public class PasteController {
 
     @GetMapping("/{hash}")
     public Paste getOne(@PathVariable String hash) {
-        Paste response = repository.findByHash(hash);
-        if (response == null) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String owner = null;
+        if (auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            owner = auth.getName();
+        }
+
+        Paste result = repository.findByHash(hash);
+
+        if (result == null) {
             throw new NotFoundException();
         } else {
-            return response;
+            if (result.getType() != Type.PRIVATE) {
+                return result;
+            } else {
+                if (owner == null || !Objects.equals(owner, result.getAuthor())) {
+                    throw new NoAccessException();
+                } else {
+                    return result;
+                }
+            }
         }
     }
-
 
 
 }

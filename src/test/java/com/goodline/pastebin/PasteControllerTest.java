@@ -2,11 +2,13 @@ package com.goodline.pastebin;
 
 import com.goodline.pastebin.controller.PasteController;
 import com.goodline.pastebin.model.Paste;
+import com.goodline.pastebin.model.Type;
 import com.goodline.pastebin.repos.PasteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,31 +19,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-//@AutoConfigureMockMvc
+@AutoConfigureMockMvc
 public class PasteControllerTest {
 
-    //@Autowired
-    //private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
     private PasteController pasteController;
 
     @MockBean
     private PasteRepository repository;
-
-//    @Test
-//    public void testGetTen() throws Exception {
-//        List<Paste> result = pasteController.getTen();
-//        Assertions.assertTrue(result.size() <= 10);
-//        //this.mockMvc.perform(get("/api")).andDo(print()).andExpect(status().isOk());
-//        //.andExpect(content().string(containsString("Hello, World")));
-//    }
 
     @BeforeEach
     public void prepareAuth() throws Exception {
@@ -55,11 +53,21 @@ public class PasteControllerTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
-//    @Test
-//    public void postEmptyPaste() throws Exception {
-//        this.mockMvc.perform(post("/api"))
-//                .andExpect(status().isBadRequest());
-//    }
+    @Test
+    @DisplayName("На главной 10 или меньше паст")
+    @Sql(value = {"/create-test-pastes.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/delete-test-pastes.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void testGetTen() throws Exception {
+        List<Paste> result = pasteController.getTen();
+        Assertions.assertTrue(result.size() <= 10);
+    }
+
+    @Test
+    @DisplayName("Попытка отправить пустую пасту")
+    public void postEmptyPaste() throws Exception {
+        this.mockMvc.perform(post("/api"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     @DisplayName("Передан json только с полем text")
@@ -152,5 +160,70 @@ public class PasteControllerTest {
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 
+    }
+
+    @Test
+    @DisplayName("Попытка получить приватную пасту без авторизации")
+    public void getPrivateWhenNotAuthenticated() throws Exception {
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        Mockito.when(authentication.isAuthenticated()).thenReturn(false);
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+
+        Paste paste = new Paste("text", null);
+        paste.setType(Type.PRIVATE);
+        Mockito.when(repository.findByHash("1")).thenReturn(paste);
+
+        this.mockMvc.perform(get("/api/1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Получить свою приватную пасту по ссылке")
+    public void getOwnPaste() throws Exception {
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(authentication.getName()).thenReturn("testUser");
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+
+        Paste paste = new Paste("text", null);
+        paste.setType(Type.PRIVATE);
+        paste.setAuthor("testUser");
+        Mockito.when(repository.findByHash("1")).thenReturn(paste);
+
+        this.mockMvc.perform(get("/api/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Получить свою приватную пасту по ссылке")
+    public void getUnlistedPaste() throws Exception {
+
+        Paste paste = new Paste("text", null);
+        paste.setType(Type.UNLISTED);
+        paste.setAuthor("notTestUser");
+        Mockito.when(repository.findByHash("1")).thenReturn(paste);
+
+        this.mockMvc.perform(get("/api/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Получить свою приватную пасту по ссылке")
+    public void getNotExistingPaste() throws Exception {
+
+        Mockito.when(repository.findByHash("1")).thenReturn(null);
+
+        this.mockMvc.perform(get("/api/1"))
+                .andExpect(status().isNotFound());
     }
 }
