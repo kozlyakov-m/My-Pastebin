@@ -1,42 +1,15 @@
-Для запуска необходима только Java (используются встроенные 
-Apache Tomcat и субд H2)
+[![Build Status](https://travis-ci.org/kozlyakov-m/My-Pastebin.svg?branch=master)](https://travis-ci.org/kozlyakov-m/My-Pastebin)
+[![codecov](https://codecov.io/gh/kozlyakov-m/My-Pastebin/branch/master/graph/badge.svg)](https://codecov.io/gh/kozlyakov-m/My-Pastebin)
+[![Heroku App Status](http://heroku-shields.herokuapp.com/my-pastebin)](https://my-pastebin.herokuapp.com/api)
+[![Docker Image Version (latest by date)](https://img.shields.io/docker/v/kozlyakovm/my-pastebin)](https://hub.docker.com/r/kozlyakovm/my-pastebin)
 
-Для получения последних 10 публичных паст отправить
-GET запрос на http://localhost:8080/
-Пример ответа в формате JSON:  
-`[{"id":3,
-"text":"something",
-"hash":"7d0f1446-7625-40f3-b3fe-3a9898ad6706",
-"expireDate":"2020-12-31T00:00:00.000+0000",
-"private":false},`
-`{"id":1,"text":"text",
-"hash":"02fa4eee-3b62-4fe4-ad37-d58b6fbaf1b5",
-"expireDate":"2020-12-31T00:00:00.000+0000",
-"private":false}]`
+#### Запуск:
+`docker run -p 8080:8080 kozlyakov/my-pastebin:1.1`
 
-Для для добавления пасты отправить
-POST запрос на http://localhost:8080/. В теле запроса
-необходимо в формате JSON передать параметры
-- text — текст пасты
-- isPrivate — true для приватной пасты и false для публичной
-- expireDate — строка с датой в формате yyyy-MM-dd
-После успешного добавления сервер вернет HTTP-статус 
-"201 CREATED"и JSON:  
-`{ "message": "Paste has been saved",
- "hash": "7d0f1446-7625-40f3-b3fe-3a9898ad6706"}`
+**Подробную документацию API можно найти по адресу `/swagger-ui.html` ([Посмотреть на heroku](https://my-pastebin.herokuapp.com/swagger-ui.html))**  
 
-Для получения  пасты по сссылке выполнить GET запрос
-по адресу http://localhost:8080/{hash}  
-Структура ответа:
-`{"id":2,"text":"text",
- "hash":"02fa4eee-3b62-4fe4-ad37-d58b6fbaf1b5",
- "expireDate":"2020-12-31T00:00:00.000+0000",
- "private":true}`
- 
- Коды ошибок:  
- 200 OK — запрос выполен успешно  
- 201 CREATED — новая паста успешно создана  
- 404 NOT FOUND — паста по данному адресу не найдена  
- 400 BAD REQUEST — в теле post-запроса отсутствуют обязательные
- параметры (text, isPrivate, expireDate), либо указан неправильный 
- формат даты, либо значение isPrivate не является true или false
+#### Основные возможности: 
+Посмотр последних 10 публичных "паст", cоздание "паст" с указанием типа (PUBLIC - доступно всем, UNLISTED - доступно только по ссылке, PRIVATE - доступно только автору).
+Для создания пасты от своего имени необходимо передавать в каждом запросе данные о пользователе (HTTP Basic authentication).    
+Для создания нового пользователя необходимо отправить post-запрос на `/api/register` json, содержащий `login` и `password`.  
+Зарегистрированным пользователям доступен раздел `/api/my-pastes` и редактирование своих "паст".
