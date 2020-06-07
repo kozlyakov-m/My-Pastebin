@@ -21,4 +21,6 @@ public interface PasteRepository extends JpaRepository<Paste, Integer> {
 
     List<Paste> findByAuthor(String author);
 
+    List<Paste> findByTextContains(String text);
+
 }
